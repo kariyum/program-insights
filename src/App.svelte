@@ -209,32 +209,57 @@
       run6: 0.0019,
     },
   ];
-  // metrics = [];
-  let runsArray = [];
   function processData(data) {
-    const sumResponseTimes = (
+    const avgResponseTimes = (
       /** @type {{ responseTimes: number[]; }} */ obj,
-    ) => obj.responseTimes.reduce((acc, val) => acc + val, 0);
+    ) =>
+      obj.responseTimes.reduce((acc, val) => acc + val, 0) /
+      obj.responseTimes.length;
+
     const sortedArray = data.sort(
-      (a, b) => sumResponseTimes(b) - sumResponseTimes(a),
+      (a, b) => avgResponseTimes(b) - avgResponseTimes(a),
     );
-    const mergedArray = sortedArray.map((obj) => {
-      const flattenedResponseTimes = obj.responseTimes.reduce(
-        (acc, val, index) => {
-          acc[`run${index + 1}`] = val;
-          return acc;
-        },
-        {},
-      );
-      return { ...obj, ...flattenedResponseTimes };
-    });
-    runsArray = mergedArray[0].responseTimes.map((_, idx) => `Run${idx + 1}`);
-    metrics = mergedArray;
-    console.log(mergedArray);
+
+    metrics = sortedArray;
+    console.log(sortedArray);
+  }
+
+  /**
+   * @param {number[]} arr
+   */
+  function average(arr) {
+    return arr.reduce((pre, cur) => pre + cur, 0) / arr.length;
+  }
+
+  /**
+   * @param {number[]} arr
+   */
+  function median(arr) {
+    const mid = Math.floor(arr.length / 2);
+    const sorted = [...arr].sort((a, b) => a - b);
+    return arr.length % 2 !== 0
+      ? sorted[mid]
+      : (sorted[mid - 1] + sorted[mid]) / 2;
+  }
+
+  /**
+   * @param {number} n
+   */
+  function format(n) {
+    return n.toFixed(3);
   }
   processData(metrics);
   const eventSource = new EventSource("http://localhost:5000/metrics-stream");
+  
+  $: connected = eventSource.readyState
+  eventSource.onerror = (event) => {
+    connected = 2
+  }
+  eventSource.onopen = (event) => {
+    connected = 1
+  }
   eventSource.onmessage = (event) => {
+    connected = eventSource.readyState
     if (event.data) {
       const data = JSON.parse(event.data);
       processData(data);
@@ -244,32 +269,35 @@
 
 <main>
   <h1>Hello world!</h1>
+  <h1>
+    {#if connected == 0}
+      Connecting... ⌛
+    {:else if connected == 1}
+      Open ✅
+    {:else if connected == 2}
+      <span style="color:red;">ERROR</span> 😱😱😱
+    {/if}
+  </h1>
   <table>
     <thead>
       <tr>
         <th>Metric</th>
-        <th> Response times </th>
-        {#each runsArray as run}
-          <th>{run}</th>
-        {/each}
+        <th># Calls</th>
+        <th>Average (ms)</th>
+        <th>Minimum (ms)</th>
+        <th>Maximum (ms)</th>
+        <th>Median (ms)</th>
       </tr>
     </thead>
     <tbody>
       {#each metrics as item (item.functionNameClass)}
         <tr>
-          <td>
-            {item.functionNameClass}
-          </td>
-          <td>
-            {item.responseTimes
-              .map((x) => x.toString())
-              .reduceRight((previous, curr) => previous + ", " + curr)}
-          </td>
-          {#each item.responseTimes as responseTime}
-            <td>
-              {responseTime}
-            </td>
-          {/each}
+          <td>{item.functionNameClass}</td>
+          <td>{item.responseTimes.length}</td>
+          <td>{format(average(item.responseTimes))}</td>
+          <td>{format(Math.min(...item.responseTimes))}</td>
+          <td>{format(Math.max(...item.responseTimes))}</td>
+          <td>{format(median(item.responseTimes))}</td>
         </tr>
       {/each}
     </tbody>
