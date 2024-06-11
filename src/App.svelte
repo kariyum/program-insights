@@ -1,74 +1,112 @@
 <script>
-	import { spring } from 'svelte/motion';
-  let metrics = [{ functionNameClass: "test", nbCalls : 1, min : 1.0, max : 2.0, average : 1.0 }, { functionNameClass: "test2", nbCalls : 1, min : 1.0, max : 2.0, average : 2.0 }];
+  import { spring } from "svelte/motion";
+  import ExpandableTableRow from "./lib/ExpandableTableRow.svelte";
+  import Table from "./lib/testbing/Table.svelte";
 
-  const sortByAverage = (data) => data.sort((a, b) => b.average - a.average,);
+  let metrics = [
+    {
+      parent: null,
+      functionNameClass: "test",
+      nbCalls: 1,
+      min: 1.0,
+      max: 2.0,
+      average: 1.0,
+      cpu_time: 1,
+    },
+    {
+      parent: "test",
+      functionNameClass: "test2",
+      nbCalls: 1,
+      min: 1.0,
+      max: 2.0,
+      average: 2.0,
+      cpu_time: 2,
+    },
+  ];
+
+  const sortByAverage = (data) => data.sort((a, b) => b.average - a.average);
 
   function processData(data) {
     // console.log(sortByAverage(data));
     return sortByAverage(data);
   }
   /**
+   *
    * @param {number} n
    */
   function format(n) {
-    return n.toFixed(3);
+    try {
+      return n.toFixed(3);
+    } catch {
+      return 0;
+    }
   }
 
-  const eventSource = new EventSource("http://10.3.16.105/calc-engine/metrics-stream");
-  
-  $: connected = eventSource.readyState
-  eventSource.onerror = (event) => {
-    connected = 2
-  }
-  eventSource.onopen = (event) => {
-    connected = 1
-  }
-  eventSource.onmessage = (event) => {
-    connected = eventSource.readyState
-    if (event.data) {
-      const data = JSON.parse(event.data);
-      metrics = processData(data);
+  let eventSource;
+  let ip = "10.3.16.105";
+  let service = "calc-engine";
+  // const ip = "10.4.48.146";
+
+  let connected = -1;
+  function connect() {
+    if (eventSource) {
+      eventSource.close();
+      console.log("Closing last connection.")
     }
-  };
-  metrics = processData(metrics)
+    eventSource = new EventSource(`http://${ip}/${service}/metrics-stream`);
+    eventSource.onerror = (event) => {
+      connected = 2;
+    };
+    eventSource.onopen = (event) => {
+      connected = 1;
+    };
+    eventSource.onmessage = (event) => {
+      connected = eventSource.readyState;
+      if (event.data) {
+        const data = JSON.parse(event.data);
+        metrics = processData(data);
+      }
+    };
+  }
+
+
+  $: {
+    if (eventSource) {
+      connected = eventSource.readyState;
+    }
+  }
+
+  metrics = processData(metrics);
+  let globalMax;
+  let globalMin;
+  $: {
+    globalMax = metrics
+      .map((a) => a.cpu_time)
+      .reduce((pre, curr) => (pre < curr ? curr : pre));
+    globalMin = metrics
+      .map((a) => a.cpu_time)
+      .reduce((pre, curr) => (pre < curr ? pre : curr));
+  }
+  let url = window.location.href.split("/")
+  ip = url[url.length - 1]
 </script>
 
 <main>
+  <!-- <ExpandableTableRow/> -->
   <h1>Hello world!</h1>
+  <input type="text" bind:value={ip}>
+  <input type="text" bind:value={service}>
+  <button on:click={connect}>Connect</button>
   <h1>
     {#if connected == 0}
-      Connecting... ⌛
+      Connecting... ⌛ to {ip}
     {:else if connected == 1}
-      Open ✅
+      Open ✅ {ip}
     {:else if connected == 2}
       <span style="color:red;">ERROR</span> 😱😱😱
     {/if}
   </h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Metric</th>
-        <th># Calls</th>
-        <th>Average (ms)</th>
-        <th>Minimum (ms)</th>
-        <th>Maximum (ms)</th>
-        <!-- <th>Median (ms)</th> -->
-      </tr>
-    </thead>
-    <tbody>
-      {#each metrics as item (item.functionNameClass)}
-        <tr>
-          <td>{item.functionNameClass}</td>
-          <td>{item.nbCalls}</td>
-          <td>{format(item.average)}</td>
-          <td>{format(item.min)}</td>
-          <td>{format(item.max)}</td>
-          <!-- <td>{format(median(item.responseTimes))}</td> -->
-        </tr>
-      {/each}
-    </tbody>
-  </table>
+  <Table data={metrics} max={globalMax} min={globalMin} />
 </main>
 
 <style>

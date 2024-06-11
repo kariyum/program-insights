@@ -1,0 +1,78 @@
+{
+    "header": [
+        {
+            "name": "promo_name",
+            "label": "Promotion Name",
+            "statuses": [
+                "Started",
+                "Ready",
+                "Submitted",
+                "Rejected",
+                "Approved",
+                "Published"
+            ]
+        }
+    ],
+    "attributeFields": [
+        {
+            "name": "promo_start_date",
+            "label": "Start Date",
+            "statuses": [
+                "Started",
+                "Ready",
+                "Submitted",
+                "Rejected",
+                "Approved",
+                "Published"
+            ]
+        },
+        {
+            "name": "promo_end_date",
+            "label": "End Date",
+            "statuses": [
+                "Started",
+                "Ready",
+                "Submitted",
+                "Rejected",
+                "Approved",
+                "Published"
+            ]
+        },
+        {
+            "name": "promo_id",
+            "label": "Promotion ID",
+            "statuses": [
+                "Started",
+                "Ready",
+                "Submitted",
+                "Rejected",
+                "Approved",
+                "Published"
+            ]
+        },
+        {
+            "name": "promo_status",
+            "label": "Promotion Status",
+            "statuses": [
+                "Started",
+                "Ready",
+                "Submitted",
+                "Rejected",
+                "Approved",
+                "Published"
+            ]
+        },
+        {
+            "name": "cloned_from_date",
+            "label": "Cloned From Date",
+            "statuses": [
+                "Started",
+                "Ready",
+                "Submitted",
+                "Rejected",
+                "Approved",
+                "Published"
+            ]
+        }
+    ]
+}

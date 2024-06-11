@@ -1,0 +1,321 @@
+{
+    "data_type": "operator",
+    "label": "=",
+    "left_child": {
+        "data_type": "operator",
+        "label": "@",
+        "left_child": {
+            "data_type": "field",
+            "label": "discount_dollars",
+            "left_child": null,
+            "right_child": null
+        },
+        "right_child": {
+            "data_type": "operator",
+            "label": ",",
+            "left_child": {
+                "data_type": "entity",
+                "label": "offer",
+                "left_child": null,
+                "right_child": null
+            },
+            "right_child": {
+                "data_type": "operator",
+                "label": ",",
+                "left_child": {
+                    "data_type": "entity",
+                    "label": "product",
+                    "left_child": null,
+                    "right_child": null
+                },
+                "right_child": {
+                    "data_type": "operator",
+                    "label": ",",
+                    "left_child": {
+                        "data_type": "entity",
+                        "label": "promotion",
+                        "left_child": null,
+                        "right_child": null
+                    },
+                    "right_child": {
+                        "data_type": "entity",
+                        "label": "promotionversion",
+                        "left_child": null,
+                        "right_child": null
+                    }
+                }
+            }
+        }
+    },
+    "right_child": {
+        "data_type": "operator",
+        "label": "EVAL",
+        "left_child": {
+            "data_type": "operator",
+            "label": "WHERE",
+            "left_child": {
+                "data_type": "operator",
+                "label": "?<",
+                "left_child": {
+                    "data_type": "operator",
+                    "label": "/",
+                    "left_child": {
+                        "data_type": "fetch",
+                        "label": "@",
+                        "left_child": {
+                            "data_type": "field",
+                            "label": "discount_numerator",
+                            "left_child": null,
+                            "right_child": null
+                        },
+                        "right_child": {
+                            "data_type": "operator",
+                            "label": ",",
+                            "left_child": {
+                                "data_type": "entity",
+                                "label": "offer",
+                                "left_child": null,
+                                "right_child": null
+                            },
+                            "right_child": {
+                                "data_type": "operator",
+                                "label": ",",
+                                "left_child": {
+                                    "data_type": "entity",
+                                    "label": "product",
+                                    "left_child": null,
+                                    "right_child": null
+                                },
+                                "right_child": {
+                                    "data_type": "operator",
+                                    "label": ",",
+                                    "left_child": {
+                                        "data_type": "entity",
+                                        "label": "promotion",
+                                        "left_child": null,
+                                        "right_child": null
+                                    },
+                                    "right_child": {
+                                        "data_type": "entity",
+                                        "label": "promotionversion",
+                                        "left_child": null,
+                                        "right_child": null
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "right_child": {
+                        "data_type": "fetch",
+                        "label": "@",
+                        "left_child": {
+                            "data_type": "field",
+                            "label": "discount_denominator",
+                            "left_child": null,
+                            "right_child": null
+                        },
+                        "right_child": {
+                            "data_type": "operator",
+                            "label": ",",
+                            "left_child": {
+                                "data_type": "entity",
+                                "label": "offer",
+                                "left_child": null,
+                                "right_child": null
+                            },
+                            "right_child": {
+                                "data_type": "operator",
+                                "label": ",",
+                                "left_child": {
+                                    "data_type": "entity",
+                                    "label": "product",
+                                    "left_child": null,
+                                    "right_child": null
+                                },
+                                "right_child": {
+                                    "data_type": "operator",
+                                    "label": ",",
+                                    "left_child": {
+                                        "data_type": "entity",
+                                        "label": "promotion",
+                                        "left_child": null,
+                                        "right_child": null
+                                    },
+                                    "right_child": {
+                                        "data_type": "entity",
+                                        "label": "promotionversion",
+                                        "left_child": null,
+                                        "right_child": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "right_child": {
+                    "data_type": "fetch",
+                    "label": "@",
+                    "left_child": {
+                        "data_type": "field",
+                        "label": "up_to_amount",
+                        "left_child": null,
+                        "right_child": null
+                    },
+                    "right_child": {
+                        "data_type": "operator",
+                        "label": ",",
+                        "left_child": {
+                            "data_type": "entity",
+                            "label": "offer",
+                            "left_child": null,
+                            "right_child": null
+                        },
+                        "right_child": {
+                            "data_type": "operator",
+                            "label": ",",
+                            "left_child": {
+                                "data_type": "entity",
+                                "label": "product",
+                                "left_child": null,
+                                "right_child": null
+                            },
+                            "right_child": {
+                                "data_type": "operator",
+                                "label": ",",
+                                "left_child": {
+                                    "data_type": "entity",
+                                    "label": "promotion",
+                                    "left_child": null,
+                                    "right_child": null
+                                },
+                                "right_child": {
+                                    "data_type": "entity",
+                                    "label": "promotionversion",
+                                    "left_child": null,
+                                    "right_child": null
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "right_child": {
+                "data_type": "crossproduct",
+                "label": "AND",
+                "left_child": {
+                    "data_type": "operator",
+                    "label": "IN",
+                    "left_child": {
+                        "data_type": "entity",
+                        "label": "offer",
+                        "left_child": null,
+                        "right_child": null
+                    },
+                    "right_child": {
+                        "data_type": "operator",
+                        "label": "@",
+                        "left_child": {
+                            "data_type": "field",
+                            "label": "offers",
+                            "left_child": null,
+                            "right_child": null
+                        },
+                        "right_child": {
+                            "data_type": "operator",
+                            "label": ",",
+                            "left_child": {
+                                "data_type": "entity",
+                                "label": "promotion",
+                                "left_child": null,
+                                "right_child": null
+                            },
+                            "right_child": {
+                                "data_type": "entity",
+                                "label": "promotionversion",
+                                "left_child": null,
+                                "right_child": null
+                            }
+                        }
+                    }
+                },
+                "right_child": {
+                    "data_type": "crossproduct",
+                    "label": "AND",
+                    "left_child": {
+                        "data_type": "operator",
+                        "label": "IN",
+                        "left_child": {
+                            "data_type": "entity",
+                            "label": "product",
+                            "left_child": null,
+                            "right_child": null
+                        },
+                        "right_child": {
+                            "data_type": "operator",
+                            "label": "@",
+                            "left_child": {
+                                "data_type": "field",
+                                "label": "for_products",
+                                "left_child": null,
+                                "right_child": null
+                            },
+                            "right_child": {
+                                "data_type": "operator",
+                                "label": ",",
+                                "left_child": {
+                                    "data_type": "entity",
+                                    "label": "offer",
+                                    "left_child": null,
+                                    "right_child": null
+                                },
+                                "right_child": {
+                                    "data_type": "operator",
+                                    "label": ",",
+                                    "left_child": {
+                                        "data_type": "entity",
+                                        "label": "promotion",
+                                        "left_child": null,
+                                        "right_child": null
+                                    },
+                                    "right_child": {
+                                        "data_type": "entity",
+                                        "label": "promotionversion",
+                                        "left_child": null,
+                                        "right_child": null
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "right_child": {
+                        "data_type": "operator",
+                        "label": "IN",
+                        "left_child": {
+                            "data_type": "entity",
+                            "label": "promotionversion",
+                            "left_child": null,
+                            "right_child": null
+                        },
+                        "right_child": {
+                            "data_type": "operator",
+                            "label": "@",
+                            "left_child": {
+                                "data_type": "field",
+                                "label": "versions",
+                                "left_child": null,
+                                "right_child": null
+                            },
+                            "right_child": {
+                                "data_type": "entity",
+                                "label": "promotion",
+                                "left_child": null,
+                                "right_child": null
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "right_child": null
+    }
+}
