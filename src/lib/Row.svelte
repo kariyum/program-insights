@@ -9,17 +9,17 @@
 	function remainingChildren(data, child) {
 		let remaining = [];
 		for (const object of data) {
-			if (object.parent === child.functionNameClass) {
+			if (object.parent === child.id) {
 				remaining.push(object);
 			}
 		}
 		console.log(
-			`remaining of ${data.length} ${child.functionNameClass}`,
+			`remaining of ${data.length} ${child.id}`,
 			remaining,
 		);
 		return remaining;
 	}
-	let showChildren = true;
+	let showChildren = false;
 	function toggle() {
 		showChildren = !showChildren;
 	}
@@ -43,8 +43,8 @@
 			class={currentItem.parent ? "child" : ""}
 			style="--padding: {depth * 20}px;"
 		>
-			<span class="arrow">{showChildren ? "↓" : "→"}</span>
-			{currentItem.functionNameClass}</td
+			<pre class="arrow" style="display: inline;font-size:25px; color:red"><span>{showChildren ? "↓" : "→"}</span></pre>
+			{currentItem.id}</td
 		>
 		<td>{currentItem.nbCalls}</td>
 		<td>{format(currentItem.average)}</td>
@@ -58,7 +58,7 @@
 			class={currentItem.parent ? "child" : ""}
 			style="--padding: {depth * 20}px;"
 		>
-			{currentItem.functionNameClass}</td
+			{currentItem.id}</td
 		>
 		<td>{currentItem.nbCalls}</td>
 		<td>{format(currentItem.average)}</td>
@@ -68,7 +68,7 @@
 	</tr>
 {/if}
 {#if showChildren && children.length > 0}
-	{#each children as item (item.functionNameClass)}
+	{#each children as item (item.id)}
 		<svelte:self
 			currentItem={item}
 			data={item.children}
@@ -83,46 +83,21 @@
 	tr:hover {
 		background-color: rgb(196, 228, 255);
 	}
-	.hidden {
-		display: none;
-	}
+
 	.child {
 		padding-left: var(--padding);
 	}
 	.arrow {
 		cursor: pointer;
 	}
-	table {
-		font-family: arial, sans-serif;
-		width: 100%;
-		border-collapse: separate;
-		border-spacing: 0;
-	}
-
-	table td {
-		white-space: nowrap;
-	}
-
-	thead {
-		position: sticky;
-		background: white;
-		top: 0;
-		padding: 0;
-		margin: 0;
-	}
-
-	th {
-		position: sticky;
-		top: 0px;
-		border: 1px solid #e3e3e3;
-		text-align: left;
-		padding: 8px;
-	}
 
 	td {
 		border: 1px solid #e3e3e3;
 		text-align: left;
 		padding: 8px;
+		inline-size: 1000px;
+		overflow-wrap: break-word;
+		max-width: 1000px;
 	}
 	.colored {
 		background-color: hsl(25, 100%, 50%, var(--rowcolor));
@@ -131,4 +106,5 @@
 	.greyed {
 		background-color: #f8f8f8;
 	}
+
 </style>

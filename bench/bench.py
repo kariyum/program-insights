@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor, wait
 
 config_dev = {
     "payload": "payload.json",
-    "ip": "10.3.16.105"
+    "ip": "10.3.16.123"
 }
 
 config_cert = {
@@ -18,7 +18,7 @@ config_cert = {
     "ip" : "10.4.48.146"
 }
 
-config = config_cert
+config = config_dev
 
 f = open(config["payload"])
 payload = json.load(f)
@@ -36,10 +36,9 @@ def login(session, email: str, password: str = 'password'):
     return cookie
 
 def fetchCustomHeaders(session):
-    # print(f"Fetching custom headers. http://{ip}/common/custom-headers")
+    print(f"http://{ip}/promotion-planning/promotion/tree/save")
     t1 = time.perf_counter()
-    print(f"http://{ip}/calc-engine/execute")
-    response = session.post(f"http://{ip}/calc-engine/execute", json=payload, stream = True, cookies = {"Authorization": session.cookies.get("Authorization")})
+    response = session.post(f"http://{ip}/promotion-planning/promotion/tree/save", json=payload, stream = True, cookies = {"Authorization": session.cookies.get("Authorization")})
     response.raise_for_status()
     t2 = time.perf_counter()
     ttfb = t2 - t1
@@ -78,8 +77,8 @@ if __name__=='__main__':
     session = requests.Session()
     session.mount('http://', adapter)
     session.cookies = login(session, "planner@riteaid.com")
-    USERS = [1] # [2, 5, 10, 20]
-    MAX_REQUESTS = 10
+    USERS = [50] # [2, 5, 10, 20]
+    MAX_REQUESTS = 50
 
     stats = dict()
     for WORKERS in USERS:

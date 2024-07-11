@@ -1,61 +1,57 @@
 <script>
   import { spring } from "svelte/motion";
-  import ExpandableTableRow from "./lib/ExpandableTableRow.svelte";
-  import Table from "./lib/testbing/Table.svelte";
-
-  let metrics = [
-    {
-      parent: null,
-      functionNameClass: "test",
-      nbCalls: 1,
-      min: 1.0,
-      max: 2.0,
-      average: 1.0,
-      cpu_time: 1,
-    },
-    {
-      parent: "test",
-      functionNameClass: "test2",
-      nbCalls: 1,
-      min: 1.0,
-      max: 2.0,
-      average: 2.0,
-      cpu_time: 2,
-    },
-  ];
-
-  const sortByAverage = (data) => data.sort((a, b) => b.average - a.average);
-
-  function processData(data) {
-    // console.log(sortByAverage(data));
-    return sortByAverage(data);
-  }
+  import Table from "./lib/Table.svelte";
+  import { processData, computeChildren } from "./lib/utils.js";
   /**
-   *
-   * @param {number} n
+   * @type {EventSource}
    */
-  function format(n) {
-    try {
-      return n.toFixed(3);
-    } catch {
-      return 0;
-    }
-  }
-
   let eventSource;
   let ip = "10.3.16.105";
-  let service = "calc-engine";
+  let service = "promotion-planning";
   // const ip = "10.4.48.146";
 
+  /**
+   * @type {Array<EnhancedMetric>}
+   */
+  let enhancedMetrics = [];
   let connected = -1;
+  let obsolete = false;
+
+  /**
+   * @type {Array<SingleMetric>}
+   */
+  let metrics = [];
+  // let metrics = [
+  //   {
+  //     "id": "test01",
+  //     "parent": null,
+  //     "start_end_times": [1 * 1000000, 6 * 1000000]
+  //   },
+  //   {
+  //     "id": "test01",
+  //     "parent": null,
+  //     "start_end_times": [1 * 1000000, 7 * 1000000]
+  //   },
+  //   {
+  //     "id": "test02",
+  //     "parent": "test01",
+  //     "start_end_times": [3 * 1000000, 5 * 1000000]
+  //   },
+  //   {
+  //     "id": "test02",
+  //     "parent": "test01",
+  //     "start_end_times": [4 * 1000000, 6 * 1000000]
+  //   }
+  // ];
+
   function connect() {
     if (eventSource) {
       eventSource.close();
-      console.log("Closing last connection.")
+      console.log("Closing last connection.");
     }
     eventSource = new EventSource(`http://${ip}/${service}/metrics-stream`);
     eventSource.onerror = (event) => {
-      connected = 2;
+      connected = 3;
     };
     eventSource.onopen = (event) => {
       connected = 1;
@@ -64,49 +60,84 @@
       connected = eventSource.readyState;
       if (event.data) {
         const data = JSON.parse(event.data);
-        metrics = processData(data);
+        metrics.push(...data);
+        console.log(metrics);
+        obsolete = true;
       }
     };
   }
 
-
   $: {
     if (eventSource) {
       connected = eventSource.readyState;
+      console.log("connected");
     }
   }
 
-  metrics = processData(metrics);
+  setInterval(() => {
+    if (obsolete == true) {
+      console.log("UPDATING.", metrics.length);
+      let start = performance.now();
+      enhancedMetrics = processData(metrics);
+      let end = performance.now();
+      console.log("TOOK: ", end - start);
+      obsolete = false;
+    }
+  }, 3000);
+
   let globalMax;
   let globalMin;
   $: {
-    globalMax = metrics
-      .map((a) => a.cpu_time)
-      .reduce((pre, curr) => (pre < curr ? curr : pre));
-    globalMin = metrics
-      .map((a) => a.cpu_time)
-      .reduce((pre, curr) => (pre < curr ? pre : curr));
+    if (metrics !== null) {
+      globalMax = enhancedMetrics
+        .map((a) => a.cpu_time)
+        .reduce((pre, curr) => (pre < curr ? curr : pre), 0);
+      globalMin = enhancedMetrics
+        .map((a) => a.cpu_time)
+        .reduce((pre, curr) => (pre < curr ? pre : curr), 0);
+    }
   }
-  let url = window.location.href.split("/")
-  ip = url[url.length - 1]
+  let url = window.location.href.split("/");
+  ip = url[url.length - 1];
+
+  function disconnect() {
+    if (connected === 1) {
+      eventSource.close();
+      connected = eventSource.readyState;
+      eventSource = null;
+    }
+  }
 </script>
 
 <main>
   <!-- <ExpandableTableRow/> -->
-  <h1>Hello world!</h1>
-  <input type="text" bind:value={ip}>
-  <input type="text" bind:value={service}>
+  <h1>Metrics streaming 101 （￣︶￣）</h1>
+  <input type="text" bind:value={ip} />
+  <input type="text" bind:value={service} />
   <button on:click={connect}>Connect</button>
+  <button
+    on:click={() => {
+      enhancedMetrics = [];
+      metrics = [];
+    }}>Reset</button
+  >
+  <button on:click={disconnect}>Disconnect</button>
   <h1>
     {#if connected == 0}
       Connecting... ⌛ to {ip}
     {:else if connected == 1}
       Open ✅ {ip}
-    {:else if connected == 2}
+    {:else if (connected = 2)}
+      Closed
+    {:else if connected == 3}
       <span style="color:red;">ERROR</span> 😱😱😱
     {/if}
   </h1>
-  <Table data={metrics} max={globalMax} min={globalMin} />
+  <Table
+    data={computeChildren(enhancedMetrics)}
+    max={globalMax}
+    min={globalMin}
+  />
 </main>
 
 <style>
