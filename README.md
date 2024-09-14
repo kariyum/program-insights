@@ -2,7 +2,7 @@
 ## What is this exactly?
 This is a web interface that computes and displays some metrics. Specifically made to display how long a function call took in milli-seconds on average, number of calls, mininum, maximum and how long it occupied the cpu (taking into consideration functions that are running in parallel). These metrics are all stored in the client side with close to zero impact on the server.
 
-## Why not use Grafana for display and Prometheus for collecting the metrics?
+## Why not use Grafana for displaying and Prometheus for collecting the metrics?
 They do a wonderful job at harvesting and displaying performance metrics. However, when it comes to micro profiling they lack a bit. For instance, we had to use buckets which decreases the precision of the measurement and can take quite a bit of time to set up. 
 
 Grafana and Prometheus are primarely used for monitoring and not profiling. Meaning, they excel at collecting and displaying lots data continuously.
