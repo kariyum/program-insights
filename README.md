@@ -22,3 +22,6 @@ The client establishes an event source request to an API that should stream json
 - start_end_times: Array of 2 Ints. Contains, A. when the function started running and B. when it ended.
 
 ![homepage](./src/assets/screenshot.jpeg)
+
+## Server code
+For now I have only used this tool when working on a project made with Scala. Please check `server` folder and follow along.
